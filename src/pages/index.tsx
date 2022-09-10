@@ -18,6 +18,7 @@ const Home: NextPage = () => {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm<FormValues>();
 
@@ -26,6 +27,13 @@ const Home: NextPage = () => {
   );
 
   const handleQuestionCreate = (data: FormValues) => {
+    if (fields.length < 2) {
+      setError("options", {
+        type: "custom",
+        message: "You need at least 2 options",
+      });
+      return;
+    }
     const obj: Question = {
       description: data.question,
       options: data.options
@@ -52,20 +60,25 @@ const Home: NextPage = () => {
         >
           <input
             placeholder="Question"
-            {...register("question", { required: true })}
+            {...register("question", { required: "Question cannot be empty" })}
             className="bg-white focus:outline-none border border-gray-300  rounded-lg py-4 px-4 block w-full appearance-none leading-normal text-lg"
           />
-          {errors.question && <span>This field is required</span>}
+          {errors.question && (
+            <p className="text-red-500">{errors.question?.message}</p>
+          )}
           {fields.map((field, index) => {
             return (
               <input
                 key={field.id}
                 placeholder="Add option"
                 className="bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-                {...register(`options.${index}.value`)}
+                {...register(`options.${index}.value` as const)}
               />
             );
           })}
+          {errors.options && (
+            <p className="text-red-500">{errors.options?.message}</p>
+          )}
           <button
             type="button"
             className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-32 self-end"
@@ -75,6 +88,7 @@ const Home: NextPage = () => {
           >
             Add option
           </button>
+
           <button className="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-lg w-full">
             Create
           </button>
