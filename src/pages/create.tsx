@@ -2,17 +2,17 @@ import type { NextPage } from "next";
 import React, { SyntheticEvent, useRef, useState } from "react";
 import { Field, FieldValues, useFieldArray, useForm } from "react-hook-form";
 
-interface Question {
+export type Question = {
   description: string;
   options: string[];
   votes?: number[];
-}
+};
 type FormValues = {
   question: string;
   options: { optionId: string; value: string }[];
 };
 
-const Home: NextPage = () => {
+const CreateQuestion: React.FC = () => {
   const {
     control,
     register,
@@ -97,5 +97,4 @@ const Home: NextPage = () => {
     </div>
   );
 };
-
-export default Home;
+export default CreateQuestion;
