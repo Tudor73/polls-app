@@ -3,9 +3,10 @@ import React, { SyntheticEvent, useRef, useState } from "react";
 import { Field, FieldValues, useFieldArray, useForm } from "react-hook-form";
 
 export type Question = {
+  id?: string;
   description: string;
   options: string[];
-  votes?: number[];
+  votes: {};
 };
 type FormValues = {
   question: string;
@@ -19,6 +20,7 @@ const CreateQuestion: React.FC = () => {
     handleSubmit,
     reset,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<FormValues>();
 
@@ -26,8 +28,10 @@ const CreateQuestion: React.FC = () => {
     { control, name: "options" }
   );
 
-  const handleQuestionCreate = (data: FormValues) => {
-    if (fields.length < 2) {
+  const handleQuestionCreate = async (data: FormValues) => {
+    if (fields.length >= 2) {
+      clearErrors();
+    } else {
       setError("options", {
         type: "custom",
         message: "You need at least 2 options",
@@ -39,8 +43,9 @@ const CreateQuestion: React.FC = () => {
       options: data.options
         .map((option) => option.value)
         .filter((value: string) => value !== ""),
+      votes: {},
     };
-    const response = fetch("/api/question", {
+    const response = await fetch("/api/question", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +77,9 @@ const CreateQuestion: React.FC = () => {
                 key={field.id}
                 placeholder="Add option"
                 className="bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-                {...register(`options.${index}.value` as const)}
+                {...register(`options.${index}.value` as const, {
+                  required: "Option cannot be empty",
+                })}
               />
             );
           })}

@@ -23,13 +23,15 @@ export default function Home() {
           Create Question
         </a>
       </Link>
-      <div className="grid grid-rows-4 grid-flow-col w-full justify-items-center gap-y-10">
+      <div className="grid grid-cols-3 w-full gap-y-8 justify-items-center">
         {data?.map((question, index) => {
           return (
             <div className="" key={index}>
-              <a className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center cursor-pointer">
-                {question.description}
-              </a>
+              <Link href={`/question/${question.id}`}>
+                <a className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center cursor-pointer">
+                  {question.description}
+                </a>
+              </Link>
             </div>
           );
         })}

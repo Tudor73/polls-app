@@ -16,6 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Show questions on home page
 - Vote on a question
 - Auth
+- click on question
 
 ## Project story
 
@@ -24,3 +25,4 @@ Prisma for database ORM
 Tailwind for UI
 
 I used react hooks form for the create question form, it's just easier to manage more inputs and validation.
+React query for getting data from server, easier to manage data, cache and state of the data without using something like redux

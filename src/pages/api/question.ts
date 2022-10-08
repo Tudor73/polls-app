@@ -9,9 +9,9 @@ export default async function question(
   if (req.method === "POST") {
     await prisma.question.create({
       data: {
-        description: req.body.description,
+        description: req.body.description, 
         options: req.body.options,
-        // votes: {},
+        Vote: req.body.votes,
       },
     });
     res.status(200).json({ message: "Question created!" });
@@ -19,4 +19,5 @@ export default async function question(
     const questions = await prisma.question.findMany();
     res.status(200).json(questions);
   }
+  
 }
