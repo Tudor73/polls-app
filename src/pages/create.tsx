@@ -24,9 +24,7 @@ const CreateQuestion: React.FC = () => {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    { control, name: "options" }
-  );
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({ control, name: "options" });
 
   const handleQuestionCreate = async (data: FormValues) => {
     if (fields.length >= 2) {
@@ -40,9 +38,7 @@ const CreateQuestion: React.FC = () => {
     }
     const obj: Question = {
       description: data.question,
-      options: data.options
-        .map((option) => option.value)
-        .filter((value: string) => value !== ""),
+      options: data.options.map((option) => option.value).filter((value: string) => value !== ""),
       votes: {},
     };
     const response = await fetch("/api/question", {
@@ -68,9 +64,7 @@ const CreateQuestion: React.FC = () => {
             {...register("question", { required: "Question cannot be empty" })}
             className="bg-white focus:outline-none border border-gray-300  rounded-lg py-4 px-4 block w-full appearance-none leading-normal text-lg"
           />
-          {errors.question && (
-            <p className="text-red-500">{errors.question?.message}</p>
-          )}
+          {errors.question && <p className="text-red-500">{errors.question?.message}</p>}
           {fields.map((field, index) => {
             return (
               <input
@@ -83,9 +77,7 @@ const CreateQuestion: React.FC = () => {
               />
             );
           })}
-          {errors.options && (
-            <p className="text-red-500">{errors.options?.message}</p>
-          )}
+          {errors.options && <p className="text-red-500">{errors.options?.message}</p>}
           <button
             type="button"
             className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-32 self-end"

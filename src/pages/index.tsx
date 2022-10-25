@@ -4,12 +4,9 @@ import React from "react";
 import { Question } from "./create";
 
 export default function Home() {
-  const { data, isLoading } = useQuery(
-    ["questions"],
-    async (): Promise<Question[]> => {
-      return await fetch("/api/question").then((res) => res.json());
-    }
-  );
+  const { data, isLoading } = useQuery(["questions"], async (): Promise<Question[]> => {
+    return await fetch("/api/question").then((res) => res.json());
+  });
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -27,7 +24,15 @@ export default function Home() {
         {data?.map((question, index) => {
           return (
             <div className="" key={index}>
-              <Link href={`/question/${question.id}`}>
+              <Link
+                href={{
+                  pathname: `/question/${question.id}`,
+                  query: {
+                    question: question.description,
+                    options: question.options,
+                  },
+                }}
+              >
                 <a className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center cursor-pointer">
                   {question.description}
                 </a>
