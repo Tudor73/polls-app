@@ -10,7 +10,6 @@ export default function Home() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(data);
 
   return (
     <div className="flex flex-col items-center justify-around h-screen w-screen">
