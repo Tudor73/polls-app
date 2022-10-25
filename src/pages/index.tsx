@@ -26,10 +26,6 @@ export default function Home() {
               <Link
                 href={{
                   pathname: `/question/${question.id}`,
-                  query: {
-                    question: question.description,
-                    options: question.options,
-                  },
                 }}
               >
                 <a className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center cursor-pointer">

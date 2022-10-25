@@ -6,7 +6,7 @@ export type Question = {
   id?: string;
   description: string;
   options: string[];
-  votes: {};
+  votes: [];
 };
 type FormValues = {
   question: string;
@@ -39,7 +39,7 @@ const CreateQuestion: React.FC = () => {
     const obj: Question = {
       description: data.question,
       options: data.options.map((option) => option.value).filter((value: string) => value !== ""),
-      votes: {},
+      votes: [],
     };
     const response = await fetch("/api/question", {
       method: "POST",

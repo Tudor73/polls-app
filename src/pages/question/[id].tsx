@@ -1,4 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { Question } from "../create";
 
 export interface Vote {
   optionPicked: number;
@@ -7,10 +9,15 @@ export interface Vote {
 
 const QuestionPage = () => {
   const router = useRouter();
+  const { id } = router.query;
 
-  const { id, question } = router.query;
-  const options = router.query.options as string[];
-
+  const { data, isLoading } = useQuery(["question"], async (): Promise<Question> => {
+    return await fetch(`/api/question/${id}`).then((res) => res.json());
+  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  console.log(data);
   const handleSubmit = async () => {
     const newVote: Vote = {
       optionPicked: 2,
@@ -30,9 +37,9 @@ const QuestionPage = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="flex flex-col justify-around h-1/2 max-w-4xl">
-        <h1 className="text-6xl"> {question} </h1>
+        <h1 className="text-6xl"> {data?.description} </h1>
         <div className="w-full">
-          {options.map((option: string, idx: number) => {
+          {data?.options.map((option: string, idx: number) => {
             return (
               <p key={idx} className="px-4 py-4 border-2 mb-2 hover:bg-gray-800 cursor-pointer">
                 {option}
