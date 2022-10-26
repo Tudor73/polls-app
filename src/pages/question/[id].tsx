@@ -1,38 +1,47 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Question } from "../create";
 
 export interface Vote {
   optionPicked: number;
   questionId: string;
 }
+const fetchQuestion = async (id: string | undefined | string[]): Promise<Question> => {
+  const response = await fetch(`/api/question/${id}`);
+  const question = await response.json();
+  return question;
+};
 
-const QuestionPage = () => {
+const handleSubmit = async (id: string) => {
+  const newVote: Vote = {
+    optionPicked: 2,
+    questionId: String(id),
+  };
+
+  const response = await fetch("/api/question/vote", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newVote),
+  });
+  console.log(response);
+};
+
+const QuestionPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, isLoading } = useQuery(["question"], async (): Promise<Question> => {
-    return await fetch(`/api/question/${id}`).then((res) => res.json());
+  const { data, status } = useQuery(["question", id], () => fetchQuestion(id), {
+    enabled: id ? true : false,
   });
-  if (isLoading) {
+
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
-  console.log(data);
-  const handleSubmit = async () => {
-    const newVote: Vote = {
-      optionPicked: 2,
-      questionId: String(id),
-    };
 
-    const response = await fetch("/api/question/vote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newVote),
-    });
-    console.log(response);
-  };
+  const [optionSelected, setOptionSelected] = useState("");
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -41,7 +50,14 @@ const QuestionPage = () => {
         <div className="w-full">
           {data?.options.map((option: string, idx: number) => {
             return (
-              <p key={idx} className="px-4 py-4 border-2 mb-2 hover:bg-gray-800 cursor-pointer">
+              <p
+                key={idx}
+                className={"px-4 py-4 border-2 mb-2 hover:bg-gray-800 cursor-pointer"}
+                id={String(idx)}
+                onClick={(event) => {
+                  setOptionSelected(event.currentTarget.id);
+                }}
+              >
                 {option}
               </p>
             );
@@ -50,7 +66,7 @@ const QuestionPage = () => {
         <a
           className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center self-end cursor-pointer"
           onClick={() => {
-            handleSubmit();
+            handleSubmit(id as string);
           }}
         >
           Submit
