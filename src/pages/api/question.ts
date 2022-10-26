@@ -11,7 +11,6 @@ export default async function question(
       data: {
         description: req.body.description, 
         options: req.body.options,
-        Vote: req.body.votes,
       },
     });
     res.status(200).json({ message: "Question created!" });

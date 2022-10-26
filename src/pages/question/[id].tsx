@@ -33,15 +33,16 @@ const QuestionPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  const [optionSelected, setOptionSelected] = useState("");
+
   const { data, status } = useQuery(["question", id], () => fetchQuestion(id), {
     enabled: id ? true : false,
+    refetchOnWindowFocus: false,
   });
 
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-
-  const [optionSelected, setOptionSelected] = useState("");
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -49,10 +50,19 @@ const QuestionPage: React.FC = () => {
         <h1 className="text-6xl"> {data?.description} </h1>
         <div className="w-full">
           {data?.options.map((option: string, idx: number) => {
+            {
+              if (optionSelected === String(idx)) {
+                return (
+                  <p key={idx} className="px-4 py-4 border-2 mb-2 bg-gray-800 cursor-pointer ">
+                    {option}
+                  </p>
+                );
+              }
+            }
             return (
               <p
                 key={idx}
-                className={"px-4 py-4 border-2 mb-2 hover:bg-gray-800 cursor-pointer"}
+                className="px-4 py-4 border-2 mb-2 hover:bg-gray-800 cursor-pointer"
                 id={String(idx)}
                 onClick={(event) => {
                   setOptionSelected(event.currentTarget.id);
