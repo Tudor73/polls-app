@@ -11,6 +11,13 @@ export default async function question(req: NextApiRequest,res: NextApiResponse<
         const question = await prisma.question.findFirst({
             where: {
                 id: String(id)  
+            },
+            include: {
+                Vote: {
+                    select:{
+                        optionPicked: true
+                    }
+                }   
             }
         } )
     res.status(200).json(question);

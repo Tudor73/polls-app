@@ -13,12 +13,11 @@ const fetchQuestion = async (id: string | undefined | string[]): Promise<Questio
   return question;
 };
 
-const handleSubmit = async (id: string) => {
+const handleSubmit = async (id: string, optionPicked: string) => {
   const newVote: Vote = {
-    optionPicked: 2,
+    optionPicked: Number(optionPicked) + 1,
     questionId: String(id),
   };
-
   const response = await fetch("/api/question/vote", {
     method: "POST",
     headers: {
@@ -26,7 +25,6 @@ const handleSubmit = async (id: string) => {
     },
     body: JSON.stringify(newVote),
   });
-  console.log(response);
 };
 
 const QuestionPage: React.FC = () => {
@@ -36,13 +34,13 @@ const QuestionPage: React.FC = () => {
   const [optionSelected, setOptionSelected] = useState("");
 
   const { data, status } = useQuery(["question", id], () => fetchQuestion(id), {
-    enabled: id ? true : false,
+    enabled: !!id,
     refetchOnWindowFocus: false,
   });
-
   if (status === "loading") {
     return <div>Loading...</div>;
   }
+  console.log(data);
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -76,7 +74,7 @@ const QuestionPage: React.FC = () => {
         <a
           className="bg-violet-600 hover:bg-violet-700 text-white  py-2 px-4 rounded-lg w-40 text-center self-end cursor-pointer"
           onClick={() => {
-            handleSubmit(id as string);
+            handleSubmit(id as string, optionSelected);
           }}
         >
           Submit
